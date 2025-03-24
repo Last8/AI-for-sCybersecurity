@@ -1,0 +1,283 @@
+Purple AI Vs Perplexity Pro(with Calude 3.7 Sonnet) - Star Custom Rules 
+
+
+
+The prompt for both models is: 
+
+"you are a SentinelOne singularity expert engineer. I am a semtinelOne site admin for my organization. help me understand how to create star custom rules. create an extensive list of example STAR custom rules, and templates, explain how to use wildcards, and how to catch applications with similar names. include a step-by-step section for making your own star custom rules. explain the query language and structure in layman's terms. Use plain language and an 8th-grade reading level. Include a list of external references in case someone has more questions. make sure to include a top ten recommended star custom rule list"
+
+
+Purple AI:
+
+Creating STAR custom rules in SentinelOne involves several steps, and it allows you to automate threat detection and response based on specific queries. Below is a detailed step-by-step guide, including examples, query language explanation, and best practices.
+
+Step-by-Step Guide to Create STAR Custom Rules
+
+Access STAR Custom Rules:
+In the SentinelOne management console, navigate to the Sentinels toolbar and click on STAR Custom Rules.
+
+Create a New Rule:
+Click on New Rule. This opens the Create Custom Rule wizard.
+
+Enter Rule Details:
+Name: Provide a unique name for the rule.
+
+Description: Add a brief description of what the rule does.
+Rule Severity: Select the severity level (e.g., Low, Medium, High).
+Expiration Date: Set an expiration date (within 6 months) or mark it as Permanent.
+Scope: Choose the scope in which to apply the rule.
+
+Define the Condition:
+Ensure Single Event is selected.
+In the Query Filter, enter your query using S1QL 2.0 syntax. For example:
+event.type == "File Modification" AND endpoint.os == "linux" AND tgt.file.path == "/etc/passwd"
+You can use wildcards in your queries. For example, to catch applications with similar names:
+process.name == "app*"  // This will match any process name starting with "app"
+
+Test the Query:
+Click on Test Query to validate the query. Adjust as necessary to ensure it returns the expected results.
+
+Set Response Actions:
+Choose how SentinelOne should respond when the rule matches:
+Treat as threat: Select either Suspicious Threat Policy or Malicious Threat Policy.
+Network Quarantine: Disconnect endpoints from the network if they match the rule.
+
+Review and Save the Rule:
+In the Summary window, review all details. If everything looks correct, you can choose to activate the rule immediately by checking the box.
+Click Submit to create the rule.
+Query Language Explanation (S1QL 2.0)
+
+S1QL (SentinelOne Query Language) is used to write queries for STAR custom rules. Here are some key components:
+
+Operators: Use 
+==
+
+ for equality, 
+!=
+
+ for inequality, 
+AND
+
+, 
+OR
+ for logical operations.
+Attributes: You can query various attributes like 
+event.type
+, 
+endpoint.os
+, 
+process.name
+, etc.
+Wildcards: Use 
+*
+
+ to match any sequence of characters. For example, 
+process.name == "chrome*"
+ matches any process name starting with "chrome".
+
+Top Ten Recommended STAR Custom Rules
+
+Detect Unauthorized File Modifications:
+event.type == "File Modification" AND tgt.file.path == "/etc/passwd"
+
+Monitor Suspicious Process Creation:
+event.type == "Process Creation" AND process.name == "cmd.exe"
+
+Alert on Network Connections to Known Malicious IPs:
+event.type == "Network Connection" AND src.ip IN ["malicious_ip1", "malicious_ip2"]
+
+Detect Multiple Failed Login Attempts:
+event.type == "Login Attempt" AND outcome == "Failed" AND count > 5
+
+Monitor for Changes to Critical System Files:
+event.type == "File Modification" AND tgt.file.path IN ["/etc/shadow", "/etc/passwd"]
+
+Alert on Unusual Application Behavior:
+event.type == "Process Execution" AND process.name == "app*" AND process.args CONTAINS "suspicious_arg"
+Detect Use of PowerShell for Suspicious Commands:
+event.type == "Process Execution" AND process.name == "powershell.exe" AND process.args CONTAINS "Invoke-Expression"
+
+Monitor for Data Exfiltration Attempts:
+event.type == "File Transfer" AND tgt.file.path CONTAINS ".zip"
+
+Alert on Changes to User Privileges:
+event.type == "User Privilege Change" AND outcome == "Success"
+
+Detect Anomalous User Behavior:
+event.type == "User Activity" AND user.id == "specific_user_id" AND activity.count > 100
+
+Refs:
+SentinelOne Help - Creating single-event custom rules
+SentinelOne Blog - Decrypting SentinelOne Cloud Detection | The Use of STAR(tm) Rules Engine by Real-Time CWPP
+SentinelOne Help - STAR custom rules
+SentinelOne Help - STAR Custom Rules
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Perplexity Pro(with Calude 3.7 Sonnet) - Star Custom Rules 
+PerPlexity:
+
+
+
+Understanding SentinelOne STAR Custom Rules
+
+SentinelOne's Storyline Active Response (STAR) rules let you create custom detection rules to protect your organization. These rules help you automatically find and respond to potential threats across your devices.
+
+What Are STAR Custom Rules?
+
+STAR rules are custom detection rules that automatically scan your endpoints for suspicious activity. When a rule finds a match, it can alert you or take action automatically, like killing a process or quarantining a device
+
+
+
+Step-by-Step Guide to Creating STAR Rules
+
+
+
+STEP 1: Write a Query
+
+First, create a query that describes what you want to detect. This is the foundation of your rule.
+
+For example, to detect changes to the password file on Linux:
+
+event.type == "File Modification" AND endpoint.os == "linux" AND tgt.file.path == "/etc/passwd"
+
+
+
+STEP 2: Create the Rule
+
+Go to the SentinelOne console
+Click 'Star Custom Rules' then 'New Rule'
+Give your rule a name, description, and severity
+Set the scope (which devices this applies to)
+Paste your query from Step 13
+
+
+STEP 3: Set Response Actions
+
+Decide what happens when the rule detects something:
+
+Just alert me (no action)
+Treat as suspicious (follows your suspicious threat policy)
+Treat as malicious (follows your malicious threat policy)
+Enable network quarantine (isolates the device)34
+
+
+STEP 4: Save and Activate
+
+Review your rule settings and check "Active rule immediately after saving" if you want it to start working right away.
+
+Understanding the Query Language
+
+SentinelOne's query language is straightforward:
+
+Use AND - to require multiple conditions
+Use OR - to match any condition
+Use == - for exact matches
+Use
+ContainsCIS
+
+for case-insensitive partial matches
+
+
+Using Wildcards
+
+You can use wildcards to make your searches more flexible:
+
+*
+matches zero or more characters
+?
+
+matches exactly one character7
+For example:
+
+adm*
+matches "admin", "administrator", etc.
+adm?n
+
+matches "admin" but not "administration"7
+
+
+Top 10 Recommended STAR Custom Rules
+
+Detect Password File Changes:
+
+
+
+event.type == "File Modification" AND endpoint.os == "linux" AND tgt.file.path == "/etc/passwd"
+
+Security Log Clearing:
+
+
+
+(EventType = "Process Creation" AND TgtProcName ContainsCIS "wevtutil.exe" AND CmdLine ContainsCIS "cl" AND CmdLine ContainsCIS "sec") OR (EventType = "Process Creation" AND TgtProcName ContainsCIS "powershell.exe" AND SrcProcCmdLine ContainsCIS "clear-eventlog")
+
+
+
+PowerShell File Deletion:
+
+EventType = "Process Creation" AND TgtProcName ContainsCIS "powershell.exe" AND CmdLine ContainsCIS "Remove-Item"
+
+
+
+Suspicious Command Line Tools:
+
+EventType = "Process Creation" AND TgtProcName IN ("cmd.exe", "powershell.exe") AND SrcProcName ContainsCIS "browser"
+
+
+
+Unusual Network Connections:
+
+EventType = "IP Connect" AND DstPort IN (4444, 5555, 6666)
+
+
+
+Suspicious Script Execution:
+
+EventType = "Process Creation" AND TgtProcName IN ("wscript.exe", "cscript.exe")
+
+
+
+Registry Modifications for Persistence:
+
+EventType = "Registry Change" AND RegistryPath ContainsCIS "Run" AND RegistryPath ContainsCIS "CurrentVersion"
+
+
+
+Credential Dumping Tools:
+
+EventType = "Process Creation" AND TgtProcName ContainsCIS "mimikatz"
+
+
+
+Suspicious USB Activity:
+
+EventType = "USB Device" AND DeviceType ContainsCIS "Mass Storage"
+
+
+
+Living-off-the-Land Tools Misuse:
+
+EventType = "Process Creation" AND TgtProcName IN ("certutil.exe", "bitsadmin.exe") AND CmdLine ContainsCIS "download"
+
+Example Rules for Catching Similar Applications
+To catch applications with similar names (like malware that mimics legitimate programs):
+EventType = "Process Creation" AND TgtProcName ContainsCIS "chrom" AND NOT TgtProcPath ContainsCIS "Program Files"
+
+This catches programs with names similar to "chrome" but not in the normal installation folder.
+
+Best Practices for STAR Rules
+Start Specific: Begin with narrow rules to avoid too many alerts
+Test Before Activating: Run your query in Deep Visibility first to see what it matches
+Refine Regularly: Review and adjust rules based on false positives
+Limit to 100 Rules: SentinelOne Complete includes 100 rules, with option to purchase more3
+Use Iterative Refinement: Let rules run, then narrow them based on results3
+External References
+
+refs:
+SentinelOne Documentation: https://www.sentinelone.com/blog/customize-your-edr-to-adapt-to-your-environment-with-sentinelone-storyline-active-response-star/
+GitHub STAR Query Collection: https://github.com/dannyroemhild/sentinelone-star-queries
+SentinelOne Blog on STAR Rules: https://www.sentinelone.com/blog/decrypting-sentinelone-cloud-detection-the-star-rules-engine-in-real-time-cwpp/
+Cortex XSOAR Integration: https://xsoar.pan.dev/docs/reference/integrations/sentinel-one-v2
+Reddit Community Examples: https://www.reddit.com/r/sysadmin/comments/13fqumz/sentinelone_star_custom_rule_examples/
+
+Answer from Perplexity: https://www.perplexity.ai/search/e301a97b-4938-4f92-88c1-83efab0b86f9?utm_source=copy_output
